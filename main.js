@@ -7,10 +7,37 @@ const app = Vue.createApp({
             busqueda: null,
             result: null,
             error: null,
+            favoritos: new Map()
         }
     },
 
-methods: {
+    created(){
+        const FavoritoGuardados = JSON.parse(window.localStorage.getItem("misFavoritos"))
+
+        if(FavoritoGuardados?.length){
+
+            const FavoritosRebuild = new Map(
+
+                FavoritoGuardados.map(alias=>[alias.id,alias])
+            )
+            this.favoritos = FavoritosRebuild
+        }
+    },
+
+    computed:{
+
+        estadoFavorito(){
+            return this.favoritos.has(this.result.id)
+        },
+
+        todosFavorito(){
+            //pasamos la información a un array
+            return Array.from(this.favoritos.values())
+            //el metodo values()traera solo los valores sin las claves
+        }
+    },
+
+    methods: {
 
         //la palabra funciont no es necesaria, porque se usa un metodo
         async Buscar(){
@@ -27,10 +54,28 @@ methods: {
             } catch (error) {
                 this.error = error  
                 //tan pronto como termine el proceso limpia haciendo vacia la busqueda  
-            /*}finally {
-                this.busqueda = null*/
+            }finally {
+                this.busqueda = null
             }
+        },//aqui cierra el metodo buscar
+        
+        addFavorito(){
+            this.favoritos.set(this.result.id, this.result)
+            this.actualizarStorage()
+        },
+
+        removerFavorito(){
+            this.favoritos.delete(this.result.id)
+            this.actualizarStorage()
+        },
+
+        actualizarStorage(){
+            window.localStorage.setItem('misFavoritos', JSON.stringify(this.todosFavorito))
+        },
+
+        mostrarFavorito(parametro){
+            //tipo array con objetos de javascript
+            this.result = parametro
         }
-    
-}
+    }
 })

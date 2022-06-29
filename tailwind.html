@@ -18,6 +18,16 @@
 </head>
 <body class="h-screen bg-gray-100">
     <section class="md:h-full flex items-center text-gray-600" id="app">
+        <div class="favorites">
+            <li v-for="item in items" :key="item">
+            {{ item }}
+            </li>
+        <div class="favorite" v-for="alias in todosFavorito" :key="alias.id">
+            <a @click.prevent="mostrarFavorito(alias)" href="">
+                <img v-bind:src="alias.picture.data.url" alt="" class="favorite__avatar">
+            </a>
+        </div>
+        </div>
             <div class="conatiner px-5 py-24 mx-auto">
                 <div class="text-center mb-12">
                     <h5 class="text-base md:text-lg text-indigo-700 mb-1">Buscar usuario de Facebook</h5>
@@ -40,6 +50,8 @@
                             <div class="p-6 hover:bg-indigo-700 hover:text-white transition duration-300 ease-in">
                                 <h2 class="text-base font-medium text-indigo-300 mb-1">ID del Perfil: {{result.id}}</h2>
                                 <h1 class="text-2x1 font-semibold mb-3">{{result.name}}</h1>
+                                <a v-if="estadoFavorito" class="result__toggle-favorite" href="" @click.prevent="removerFavorito">Eliminar favorito<img src="img/eliminar.png" width="30" height="30"></a>
+                                <a v-else class="result__toggle-favorite" href="" v-on:click.prevent="addFavorito">Añadir favorito<img src="img/estrella.png" width="30" height="30"></a>
                                 </div>
                             </div>
                         </div>
